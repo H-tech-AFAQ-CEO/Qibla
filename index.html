@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#06150F" id="themeColor">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Qibla Direction - Zād Al-Qalb</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --dial: min(86vw, 56vh, 430px); }
+  html[data-theme="dark"] {
+    --bg1:#0E3A2E; --bg2:#06150F; --ink:#F1EBDA; --muted:#9DB5A9; --gold:#D9B65D; --gold2:#F3DE9B; --gold3:#9C7A2C;
+    --accent:#46D1A1; --card:rgba(255,255,255,.06); --cardb:rgba(217,182,93,.22); --dial1:#14503F; --dial2:#081E17;
+    --tick:rgba(241,235,218,.3); --north:#FF6B5E; --shadow:0 24px 60px rgba(0,0,0,.5); --btnink:#1B1608;
+  }
+  html[data-theme="light"] {
+    --bg1:#FFFDF7; --bg2:#EFE6CF; --ink:#1F2A26; --muted:#66736D; --gold:#B8902F; --gold2:#E6CD83; --gold3:#8A6A1F;
+    --accent:#0F7A5A; --card:rgba(255,255,255,.78); --cardb:rgba(184,144,47,.35); --dial1:#FFFFFF; --dial2:#F3ECD8;
+    --tick:rgba(31,42,38,.28); --north:#D32F2F; --shadow:0 18px 44px rgba(90,65,10,.2); --btnink:#fff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    color: var(--ink); min-height: 100vh; min-height: 100dvh;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72' fill='none' stroke='%23D9B65D' stroke-opacity='.09' stroke-width='1'%3E%3Crect x='18' y='18' width='36' height='36'/%3E%3Crect x='18' y='18' width='36' height='36' transform='rotate(45 36 36)'/%3E%3C/svg%3E"),
+      radial-gradient(120% 90% at 50% 0%, var(--bg1), var(--bg2));
+    background-attachment: fixed;
+    display: flex; justify-content: center; align-items: center;
+    padding: max(18px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    transition: color .3s;
+  }
+  .i { width: 1.2em; height: 1.2em; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .app { width: 100%; max-width: 560px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  header { text-align: center; }
+  .ar { font-family: 'Amiri', 'Traditional Arabic', serif; font-size: clamp(1.9rem, 7vw, 2.6rem); color: var(--gold); line-height: 1.1; }
+  h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; font-size: clamp(1.3rem, 5vw, 1.7rem); letter-spacing: .02em; margin-top: 2px; }
+  .sub { color: var(--muted); font-size: .85rem; margin-top: 2px; }
+
+  .stage { position: relative; width: var(--dial); height: var(--dial); flex: none; border-radius: 50%; box-shadow: var(--shadow); transition: box-shadow .35s; }
+  .stage canvas { width: 100%; height: 100%; display: block; border-radius: 50%; }
+  .stage.aligned { box-shadow: 0 0 0 3px var(--accent), 0 0 46px color-mix(in srgb, var(--accent) 55%, transparent), var(--shadow); }
+
+  .panel { width: 100%; display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
+  .hint { min-height: 1.6em; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: .98rem; color: var(--gold); text-align: center; }
+  .hint.ok { color: var(--accent); }
+  .hint .flip { transform: scaleX(-1); }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .card { background: var(--card); border: 1px solid var(--cardb); border-radius: 16px; padding: 12px 10px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); text-align: center; min-width: 0; }
+  .card .lbl { display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--muted); font-size: .74rem; }
+  .card .lbl .i { color: var(--gold); width: 1.1em; height: 1.1em; }
+  .card .val { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; font-size: clamp(1.15rem, 4.6vw, 1.55rem); margin-top: 4px; white-space: nowrap; }
+  .card .dir { font-size: .72rem; color: var(--muted); margin-top: 1px; min-height: 1em; }
+  .loc { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--muted); font-size: .84rem; text-align: center; overflow-wrap: anywhere; }
+  .loc .i { color: var(--gold); }
+  .controls { display: flex; gap: 10px; align-items: stretch; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 16px; font: 600 .9rem 'Inter', system-ui, sans-serif; border-radius: 14px; cursor: pointer; border: 1px solid var(--gold); background: transparent; color: var(--gold); transition: transform .15s, background .2s, color .2s, box-shadow .2s; }
+  .btn:hover { background: color-mix(in srgb, var(--gold) 14%, transparent); }
+  .btn:active { transform: scale(.97); }
+  .btn:focus-visible, .dlg input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn.primary { flex: 1; background: linear-gradient(180deg, var(--gold2), var(--gold) 55%, var(--gold3)); color: var(--btnink); border-color: transparent; box-shadow: 0 6px 18px color-mix(in srgb, var(--gold) 35%, transparent); }
+  .btn.primary:hover { filter: brightness(1.06); }
+  .btn.sec { flex: 1; }
+  .btn.round { width: 48px; padding: 0; flex: none; }
+  .btn:disabled { opacity: .55; cursor: wait; }
+  .status { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: .78rem; color: var(--muted); min-height: 1.3em; text-align: center; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+  .dot.live { background: var(--accent); animation: pulse 1.8s infinite; }
+  .dot.err { background: var(--north); }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent); } 100% { box-shadow: 0 0 0 9px transparent; } }
+
+  #dlgWrap { display: none; position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,.62); align-items: center; justify-content: center; padding: 16px; }
+  .dlg { width: 100%; max-width: 340px; background: var(--bg2); color: var(--ink); border: 1px solid var(--cardb); border-radius: 20px; padding: 22px; box-shadow: var(--shadow); }
+  .dlg h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.4rem; margin-bottom: 14px; text-align: center; }
+  .dlg input { width: 100%; padding: 13px; margin-bottom: 10px; border-radius: 12px; border: 1px solid var(--cardb); background: var(--card); color: var(--ink); font-size: 16px; }
+  .dlg .controls { margin-top: 6px; }
+
+  @media (orientation: landscape) and (max-height: 540px), (min-width: 920px) and (orientation: landscape) {
+    :root { --dial: min(80vh, 44vw, 440px); }
+    .app { max-width: 960px; display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: clamp(24px, 5vw, 64px); align-items: center; }
+    header { grid-column: 2; grid-row: 1; text-align: left; align-self: end; }
+    .stage { grid-column: 1; grid-row: 1 / span 2; }
+    .panel { grid-column: 2; grid-row: 2; align-self: start; max-width: 420px; }
+    .hint, .loc, .status { justify-content: flex-start; text-align: left; }
+  }
+  @media (max-width: 360px) { .btn { padding: 0 10px; font-size: .82rem; } .stats { gap: 6px; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19.5 8.5a2.1 2.1 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.2 8.2 0 0 1 9.5 4 8.2 8.2 0 1 0 20 14.5z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.8 8.2l-2.1 5.5-5.5 2.1 2.1-5.5z"/></symbol>
+  <symbol id="i-nav" viewBox="0 0 24 24"><path d="M12 3l7 17-7-4-7 4z"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h6.5a3 3 0 0 0 0-6h-5a3 3 0 0 1 0-6H16"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21.5s7-6.2 7-11.8a7 7 0 1 0-14 0c0 5.6 7 11.8 7 11.8z"/><circle cx="12" cy="9.7" r="2.5"/></symbol>
+  <symbol id="i-sensor" viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><path d="M9 12a3 3 0 1 0 6 0 3 3 0 0 0-6 0z"/><path d="M5.6 5.6a9 9 0 0 0 0 12.8M18.4 5.6a9 9 0 0 1 0 12.8"/></symbol>
+</svg>
+
+<main class="app">
+  <header>
+    <div class="ar" lang="ar" dir="rtl">القبلة</div>
+    <h1>Zād Al-Qalb</h1>
+    <p class="sub">Qibla Direction</p>
+  </header>
+
+  <section class="stage" id="stage"><canvas id="cv" aria-label="Live Qibla compass"></canvas></section>
+
+  <section class="panel">
+    <div class="hint" id="hint" aria-live="polite"></div>
+
+    <div class="stats">
+      <div class="card"><div class="lbl"><svg class="i"><use href="#i-compass"/></svg>Qibla</div><div class="val" id="bVal">0.0°</div><div class="dir" id="bDir">N</div></div>
+      <div class="card"><div class="lbl"><svg class="i"><use href="#i-nav"/></svg>Facing</div><div class="val" id="fVal">—</div><div class="dir" id="fDir"></div></div>
+      <div class="card"><div class="lbl"><svg class="i"><use href="#i-route"/></svg>Distance</div><div class="val" id="dVal">0</div><div class="dir">km to Kaaba</div></div>
+    </div>
+
+    <div class="loc"><svg class="i"><use href="#i-pin"/></svg><span id="loc">Current location</span></div>
+
+    <div class="controls">
+      <button class="btn primary" id="btnLoc" onclick="useMyLocation()"><svg class="i"><use href="#i-locate"/></svg><span id="locLabel">My location</span></button>
+      <button class="btn sec" onclick="openDlg()"><svg class="i"><use href="#i-edit"/></svg>Change</button>
+      <button class="btn round" id="btnTheme" onclick="toggleTheme()" aria-label="Switch theme"><svg class="i"><use href="#i-sun" id="themeUse"/></svg></button>
+    </div>
+
+    <div class="status"><span class="dot" id="dot"></span><span id="status">Loading…</span></div>
+  </section>
+</main>
+
+<div id="dlgWrap" role="dialog" aria-modal="true" aria-label="Change location">
+  <div class="dlg">
+    <h3>Change location</h3>
+    <input type="number" id="latIn" step="any" placeholder="Latitude" inputmode="decimal">
+    <input type="number" id="lonIn" step="any" placeholder="Longitude" inputmode="decimal">
+    <div class="controls">
+      <button class="btn primary" onclick="saveLoc()">Save</button>
+      <button class="btn sec" onclick="closeDlg()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const KAABA_LAT = 21.4225, KAABA_LON = 39.8262;
+const $ = id => document.getElementById(id);
+const cv = $('cv'), ctx = cv.getContext('2d');
+const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+const ico = (n, cls = '') => `<svg class="i ${cls}"><use href="#i-${n}"/></svg>`;
+
+let userLat = 29.3759, userLon = 47.9774;
+let targetHeading = 0, shownHeading = 0, hasHeading = false, lowAcc = false;
+let manual = false, watchId = null, lastGeo = null, place = '', startT = Date.now(), wakeLock = null;
+
+const rad = d => d * Math.PI / 180, deg = r => r * 180 / Math.PI, norm = d => ((d % 360) + 360) % 360;
+const dirLabel = d => dirs[Math.round(norm(d) / 22.5) % 16];
+const setText = (el, t) => { if (el.textContent !== t) el.textContent = t; };
+const setHTML = (el, h) => { if (el._h !== h) { el._h = h; el.innerHTML = h; } };
+function setStatus(t, kind) { setText($('status'), t); $('dot').className = 'dot' + (kind ? ' ' + kind : ''); }
+
+function qiblaBearing(lat, lon) {
+  const p1 = rad(lat), p2 = rad(KAABA_LAT), dl = rad(KAABA_LON - lon);
+  return norm(deg(Math.atan2(Math.sin(dl) * Math.cos(p2), Math.cos(p1) * Math.sin(p2) - Math.sin(p1) * Math.cos(p2) * Math.cos(dl))));
+}
+function kaabaKm(lat, lon) {
+  const p1 = rad(lat), p2 = rad(KAABA_LAT), dp = rad(KAABA_LAT - lat), dl = rad(KAABA_LON - lon);
+  const a = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
+  return 2 * 6371 * Math.asin(Math.sqrt(a));
+}
+
+/* ── Theme ── */
+let C = {};
+function readColors() {
+  const s = getComputedStyle(document.documentElement), g = k => s.getPropertyValue(k).trim();
+  C = { dial1: g('--dial1'), dial2: g('--dial2'), tick: g('--tick'), ink: g('--ink'), north: g('--north'), gold: g('--gold'), gold2: g('--gold2'), gold3: g('--gold3'), muted: g('--muted') };
+}
+function applyTheme(t) {
+  document.documentElement.dataset.theme = t;
+  $('themeUse').setAttribute('href', t === 'dark' ? '#i-sun' : '#i-moon');
+  $('themeColor').content = t === 'dark' ? '#06150F' : '#FFFDF7';
+  readColors();
+}
+function toggleTheme() {
+  const t = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(t);
+  try { localStorage.setItem('qibla-theme', t); } catch (e) {}
+}
+(function initTheme() {
+  let t = null;
+  try { t = localStorage.getItem('qibla-theme'); } catch (e) {}
+  if (!t) t = window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  applyTheme(t);
+})();
+
+/* ── Canvas ── */
+function resize() {
+  const s = $('stage').clientWidth, dpr = window.devicePixelRatio || 1;
+  cv.width = cv.height = Math.round(s * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  cv._s = s;
+}
+new ResizeObserver(resize).observe($('stage'));
+
+function draw(qibla, heading) {
+  const s = cv._s || 280, c = s / 2;
+  ctx.clearRect(0, 0, s, s);
+
+  // gold bezel
+  const bz = ctx.createLinearGradient(0, 0, s, s);
+  bz.addColorStop(0, C.gold2); bz.addColorStop(.5, C.gold); bz.addColorStop(1, C.gold3);
+  ctx.beginPath(); ctx.arc(c, c, c, 0, 7); ctx.fillStyle = bz; ctx.fill();
+
+  // dial face
+  const r = c - s * 0.035;
+  const fg = ctx.createRadialGradient(c, c * .8, r * .1, c, c, r);
+  fg.addColorStop(0, C.dial1); fg.addColorStop(1, C.dial2);
+  ctx.beginPath(); ctx.arc(c, c, r, 0, 7); ctx.fillStyle = fg; ctx.fill();
+
+  ctx.save();
+  ctx.translate(c, c);
+  ctx.rotate(rad(-heading));
+
+  // inner ring
+  ctx.beginPath(); ctx.arc(0, 0, r * .56, 0, 7);
+  ctx.strokeStyle = C.tick; ctx.lineWidth = 1; ctx.stroke();
+
+  for (let i = 0; i < 72; i++) {
+    const a = rad(i * 5), big = i % 9 === 0, mid = i % 3 === 0;
+    const r1 = r - s * (big ? .075 : mid ? .05 : .033), r2 = r - s * .012;
+    ctx.beginPath();
+    ctx.moveTo(Math.sin(a) * r1, -Math.cos(a) * r1); ctx.lineTo(Math.sin(a) * r2, -Math.cos(a) * r2);
+    ctx.strokeStyle = big ? C.gold : C.tick; ctx.lineWidth = big ? Math.max(2, s * .008) : 1; ctx.stroke();
+  }
+
+  // numbers + cardinals (kept upright)
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (let d = 0; d < 360; d += 30) {
+    const card = d % 90 === 0, lr = r - s * (card ? .15 : .125), a = rad(d);
+    ctx.save();
+    ctx.translate(Math.sin(a) * lr, -Math.cos(a) * lr); ctx.rotate(rad(heading));
+    if (card) {
+      ctx.font = `700 ${Math.round(s * .075)}px 'Cormorant Garamond', Georgia, serif`;
+      ctx.fillStyle = d === 0 ? C.north : C.ink; ctx.fillText(['N','E','S','W'][d / 90], 0, 0);
+    } else {
+      ctx.font = `500 ${Math.round(s * .03)}px Inter, sans-serif`;
+      ctx.fillStyle = C.muted; ctx.fillText(d, 0, 0);
+    }
+    ctx.restore();
+  }
+
+  // Qibla line + Kaaba marker
+  ctx.save(); ctx.rotate(rad(qibla));
+  ctx.beginPath(); ctx.moveTo(0, -s * .04); ctx.lineTo(0, -(r * .56));
+  ctx.strokeStyle = C.gold; ctx.lineWidth = Math.max(2, s * .01); ctx.lineCap = 'round'; ctx.setLineDash([s * .015, s * .02]); ctx.stroke(); ctx.setLineDash([]);
+  const k = s * .105, ky = -(r * .56) - k * .75;
+  ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = s * .02;
+  ctx.fillStyle = '#121212'; ctx.beginPath(); ctx.roundRect(-k / 2, ky - k / 2, k, k, k * .12); ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = C.gold; ctx.fillRect(-k / 2, ky - k / 2 + k * .24, k, k * .13);
+  ctx.fillRect(-k * .12, ky - k / 2 + k * .52, k * .24, k * .3);
+  ctx.restore();
+
+  ctx.restore();
+
+  // hub + fixed pointer
+  ctx.beginPath(); ctx.arc(c, c, s * .032, 0, 7); ctx.fillStyle = bz; ctx.fill();
+  ctx.beginPath(); ctx.arc(c, c, s * .012, 0, 7); ctx.fillStyle = C.dial2; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(c, s * .012); ctx.lineTo(c - s * .032, s * .075); ctx.lineTo(c + s * .032, s * .075); ctx.closePath();
+  ctx.fillStyle = '#fff'; ctx.strokeStyle = C.gold3; ctx.lineWidth = 1.5; ctx.fill(); ctx.stroke();
+}
+
+/* ── UI text ── */
+let wasAligned = false;
+function ui(q, h) {
+  setText($('bVal'), q.toFixed(1) + '°'); setText($('bDir'), dirLabel(q));
+  setText($('fVal'), hasHeading ? h.toFixed(0) + '°' : '—'); setText($('fDir'), hasHeading ? dirLabel(h) : '');
+  setText($('dVal'), Math.round(kaabaKm(userLat, userLon)).toLocaleString());
+  setText($('loc'), (place ? place + ' · ' : '') + userLat.toFixed(4) + ', ' + userLon.toFixed(4));
+
+  const diff = Math.abs(((q - h + 540) % 360) - 180), aligned = hasHeading && diff < 3;
+  $('stage').classList.toggle('aligned', aligned);
+  const hint = $('hint'); hint.classList.toggle('ok', aligned);
+  if (aligned) setHTML(hint, ico('check') + 'You are facing the Qibla');
+  else if (hasHeading && lowAcc) setHTML(hint, ico('sensor') + 'Move your phone in a figure-8 to calibrate');
+  else if (hasHeading) { const right = ((q - h + 360) % 360) < 180; setHTML(hint, ico('arrow', right ? '' : 'flip') + 'Turn ' + (right ? 'right ' : 'left ') + Math.round(diff) + '°'); }
+  else if (Date.now() - startT > 3500) setHTML(hint, ico('sensor') + 'No compass found. Showing bearing from north.');
+  else setHTML(hint, ico('sensor') + 'Waiting for compass…');
+  if (aligned && !wasAligned && navigator.vibrate) navigator.vibrate(60);
+  wasAligned = aligned;
+}
+
+function frame() {
+  shownHeading = norm(shownHeading + (((targetHeading - shownHeading + 540) % 360) - 180) * 0.2);
+  const q = qiblaBearing(userLat, userLon);
+  draw(q, shownHeading); ui(q, shownHeading);
+  requestAnimationFrame(frame);
+}
+
+/* ── Compass ── */
+function onOrient(e) {
+  let h = null;
+  if (typeof e.webkitCompassHeading === 'number') { h = e.webkitCompassHeading; lowAcc = e.webkitCompassAccuracy < 0 || e.webkitCompassAccuracy > 30; }
+  else if (e.alpha !== null && (e.absolute || e.type === 'deviceorientationabsolute')) h = 360 - e.alpha;
+  if (h === null || isNaN(h)) return;
+  const ang = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
+  targetHeading = norm(h + ang);
+  if (!hasHeading) { hasHeading = true; shownHeading = targetHeading; }
+}
+function startCompass() {
+  window.addEventListener('deviceorientationabsolute', onOrient, true);
+  window.addEventListener('deviceorientation', onOrient, true);
+}
+async function enableCompass() {
+  const D = window.DeviceOrientationEvent;
+  if (D && typeof D.requestPermission === 'function') {
+    try { if (await D.requestPermission() !== 'granted') setStatus('Compass permission denied.', 'err'); }
+    catch (e) { setStatus('Compass unavailable: ' + e.message, 'err'); }
+  }
+  startCompass();
+}
+
+/* ── Keep screen awake ── */
+async function keepAwake() { try { if ('wakeLock' in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => wakeLock = null); } } catch (e) {} }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') keepAwake(); });
+
+/* ── Location ── */
+async function reverseGeocode(lat, lon) {
+  if (lastGeo && Math.abs(lat - lastGeo[0]) + Math.abs(lon - lastGeo[1]) < 0.02) return;
+  lastGeo = [lat, lon];
+  try {
+    const j = await (await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`)).json();
+    place = [j.city || j.locality, j.countryName].filter(Boolean).join(', ');
+  } catch (e) {}
+}
+function setPos(lat, lon, msg, kind) { userLat = lat; userLon = lon; reverseGeocode(lat, lon); if (msg) setStatus(msg, kind); }
+async function ipFallback() {
+  try {
+    const j = await (await fetch('https://get.geojs.io/v1/ip/geo.json')).json();
+    setPos(parseFloat(j.latitude), parseFloat(j.longitude), 'Approximate location from network. Allow GPS for accuracy.');
+  } catch (e) { setStatus('Location unavailable. Use Change to enter coordinates.', 'err'); }
+}
+function requestLocation() {
+  manual = false;
+  if (!navigator.geolocation) { ipFallback(); return; }
+  setStatus('Getting live location…');
+  $('btnLoc').disabled = true;
+  if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+  watchId = navigator.geolocation.watchPosition(
+    p => { if (manual) return; $('btnLoc').disabled = false; setPos(p.coords.latitude, p.coords.longitude, 'Live location · accurate to ' + Math.round(p.coords.accuracy) + ' m', 'live'); },
+    err => { $('btnLoc').disabled = false; setStatus(err.code === 1 ? 'Location blocked. Allow it in browser settings, or use Change.' : 'Location error: ' + err.message, 'err'); ipFallback(); },
+    { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+  );
+}
+function useMyLocation() { enableCompass(); keepAwake(); requestLocation(); }
+
+function openDlg() { $('latIn').value = userLat.toFixed(6); $('lonIn').value = userLon.toFixed(6); $('dlgWrap').style.display = 'flex'; }
+function closeDlg() { $('dlgWrap').style.display = 'none'; }
+function saveLoc() {
+  const la = parseFloat($('latIn').value), lo = parseFloat($('lonIn').value);
+  if (isNaN(la) || isNaN(lo) || Math.abs(la) > 90 || Math.abs(lo) > 180) { setStatus('Enter valid coordinates.', 'err'); closeDlg(); return; }
+  manual = true; if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
+  place = ''; lastGeo = null; setPos(la, lo, 'Manual location. Tap My location for live tracking.'); closeDlg();
+}
+$('dlgWrap').addEventListener('click', e => { if (e.target.id === 'dlgWrap') closeDlg(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDlg(); });
+
+/* ── Init ── */
+resize(); requestAnimationFrame(frame);
+if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') setText($('locLabel'), 'Allow compass & location');
+else startCompass();
+requestLocation(); keepAwake();
+</script>
+</body>
+</html>
