@@ -12,92 +12,82 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root { --dial: min(86vw, 52vh, 420px); }
+  :root { --dial: min(88vw, 50vh, 400px); }
+  @supports (height: 1dvh) { :root { --dial: min(88vw, 50dvh, 400px); } }
   html[data-theme="dark"] {
     --bg1:#0E3A2E; --bg2:#06150F; --ink:#F1EBDA; --muted:#9DB5A9; --gold:#D9B65D; --gold2:#F3DE9B; --gold3:#9C7A2C;
     --accent:#46D1A1; --card:rgba(255,255,255,.07); --line:rgba(217,182,93,.25); --dial1:#14503F; --dial2:#081E17;
-    --tick:rgba(241,235,218,.3); --north:#FF6B5E; --shadow:0 24px 60px rgba(0,0,0,.5); --pop:#0C241C;
+    --tick:rgba(241,235,218,.3); --north:#FF6B5E; --shadow:0 20px 50px rgba(0,0,0,.5); --pop:#0C241C;
   }
   html[data-theme="light"] {
     --bg1:#FFFDF7; --bg2:#EFE6CF; --ink:#1F2A26; --muted:#66736D; --gold:#B8902F; --gold2:#E6CD83; --gold3:#8A6A1F;
-    --accent:#0F7A5A; --card:rgba(255,255,255,.8); --line:rgba(184,144,47,.38); --dial1:#FFFFFF; --dial2:#F3ECD8;
-    --tick:rgba(31,42,38,.28); --north:#D32F2F; --shadow:0 18px 44px rgba(90,65,10,.2); --pop:#FFFFFF;
+    --accent:#0F7A5A; --card:rgba(255,255,255,.85); --line:rgba(184,144,47,.4); --dial1:#FFFFFF; --dial2:#F3ECD8;
+    --tick:rgba(31,42,38,.28); --north:#D32F2F; --shadow:0 16px 40px rgba(90,65,10,.2); --pop:#FFFFFF;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
     font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    color: var(--ink); min-height: 100vh; min-height: 100dvh;
+    color: var(--ink); min-height: 100vh; min-height: 100dvh; overscroll-behavior: none;
     background:
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72' fill='none' stroke='%23D9B65D' stroke-opacity='.08'%3E%3Crect x='18' y='18' width='36' height='36'/%3E%3Crect x='18' y='18' width='36' height='36' transform='rotate(45 36 36)'/%3E%3C/svg%3E"),
       radial-gradient(120% 90% at 50% 0%, var(--bg1), var(--bg2));
     background-attachment: fixed;
-    display: flex; justify-content: center; align-items: center;
-    padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    display: flex; justify-content: center;
+    padding: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
   }
   .i { width: 1.2em; height: 1.2em; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: none; }
-  .app { width: 100%; max-width: 480px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
-  .top { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .app { width: 100%; max-width: 440px; margin: auto 0; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .top { width: 100%; display: flex; align-items: center; justify-content: space-between; }
   .brand { display: flex; align-items: baseline; gap: 10px; }
   .ar { font-family: 'Amiri', serif; font-size: 1.7rem; color: var(--gold); line-height: 1; }
   h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.25rem; font-weight: 700; }
-  .ib { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; flex: none; border-radius: 50%; border: 1px solid var(--line); background: var(--card); color: var(--gold); cursor: pointer; transition: transform .15s, background .2s; }
-  .ib:hover { background: color-mix(in srgb, var(--gold) 16%, var(--card)); }
+  .ib { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); color: var(--gold); cursor: pointer; }
   .ib:active { transform: scale(.94); }
-  .ib:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-  .search { position: relative; width: 100%; display: flex; gap: 8px; }
-  .field { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid var(--line); background: var(--card); color: var(--muted); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .search { position: relative; width: 100%; }
+  .field { display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 16px; border-radius: 24px; border: 1px solid var(--line); background: var(--card); color: var(--muted); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
   .field:focus-within { border-color: var(--gold); }
   .field input { flex: 1; min-width: 0; height: 100%; border: 0; background: transparent; color: var(--ink); font: 500 16px 'Inter', system-ui, sans-serif; outline: none; }
   .field input::placeholder { color: var(--muted); }
-  #list { display: none; position: absolute; left: 0; right: 52px; top: 52px; z-index: 20; max-height: min(44vh, 320px); overflow-y: auto; background: var(--pop); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); padding: 6px; }
-  #list button { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; width: 100%; text-align: left; padding: 10px 12px; border: 0; border-radius: 10px; background: transparent; color: var(--ink); font: 500 .92rem 'Inter', system-ui, sans-serif; cursor: pointer; }
-  #list button small { color: var(--muted); font-size: .76rem; font-weight: 400; }
-  #list button:hover, #list button:focus-visible, #list button.on { background: color-mix(in srgb, var(--gold) 16%, transparent); outline: none; }
-  #list .none { padding: 12px; color: var(--muted); font-size: .88rem; }
+  #list { display: none; position: absolute; left: 0; right: 0; top: 56px; z-index: 20; max-height: 42vh; overflow-y: auto; background: var(--pop); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 6px; }
+  #list button { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; width: 100%; text-align: left; padding: 12px; border: 0; border-radius: 12px; background: transparent; color: var(--ink); font: 500 .95rem 'Inter', system-ui, sans-serif; }
+  #list button small { color: var(--muted); font-size: .78rem; font-weight: 400; }
+  #list button:active { background: color-mix(in srgb, var(--gold) 18%, transparent); }
+  #list .none { padding: 12px; color: var(--muted); font-size: .9rem; }
 
   .stage { position: relative; width: var(--dial); height: var(--dial); flex: none; border-radius: 50%; box-shadow: var(--shadow); transition: box-shadow .35s; }
   .stage canvas { width: 100%; height: 100%; display: block; border-radius: 50%; }
-  .stage.aligned { box-shadow: 0 0 0 3px var(--accent), 0 0 46px color-mix(in srgb, var(--accent) 55%, transparent), var(--shadow); }
+  .stage.aligned { box-shadow: 0 0 0 3px var(--accent), 0 0 44px color-mix(in srgb, var(--accent) 55%, transparent), var(--shadow); }
 
   .info { width: 100%; text-align: center; display: flex; flex-direction: column; gap: 6px; }
-  .big { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; font-size: clamp(1.9rem, 8vw, 2.5rem); line-height: 1; }
+  .big { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; font-size: clamp(2rem, 9vw, 2.6rem); line-height: 1; }
   .big span { color: var(--gold); font-size: .6em; margin-left: 6px; }
-  .hint { min-height: 1.5em; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: .95rem; color: var(--gold); }
+  .hint { min-height: 1.5em; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: .93rem; color: var(--gold); line-height: 1.35; padding: 0 6px; }
   .hint.ok { color: var(--accent); }
+  .hint.warn { color: var(--north); font-weight: 500; font-size: .85rem; }
   .hint .flip { transform: scaleX(-1); }
-  .meta { color: var(--muted); font-size: .84rem; overflow-wrap: anywhere; }
+  .meta { color: var(--muted); font-size: .86rem; overflow-wrap: anywhere; }
   .meta b { color: var(--ink); font-weight: 600; }
   .note { color: var(--muted); font-size: .76rem; min-height: 1.2em; }
   .note.err { color: var(--north); }
-
-  @media (orientation: landscape) and (max-height: 540px), (min-width: 920px) and (orientation: landscape) {
-    :root { --dial: min(82vh, 44vw, 440px); }
-    .app { max-width: 940px; display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: clamp(24px, 5vw, 60px); row-gap: 14px; align-content: center; }
-    .stage { grid-column: 1; grid-row: 1 / span 3; }
-    .top, .search, .info { grid-column: 2; max-width: 420px; }
-    .info { text-align: left; }
-    .hint { justify-content: flex-start; }
-  }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
-  <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.2 8.2 0 0 1 9.5 4 8.2 8.2 0 1 0 20 14.5z"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21.5s7-6.2 7-11.8a7 7 0 1 0-14 0c0 5.6 7 11.8 7 11.8z"/><circle cx="12" cy="9.7" r="2.5"/></symbol>
   <symbol id="i-sensor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><path d="M5.6 5.6a9 9 0 0 0 0 12.8M18.4 5.6a9 9 0 0 1 0 12.8"/></symbol>
 </svg>
 
 <main class="app">
   <div class="top">
     <div class="brand"><span class="ar" lang="ar" dir="rtl">القبلة</span><h1>Zād Al-Qalb</h1></div>
-    <button class="ib" id="btnTheme" onclick="toggleTheme()" aria-label="Switch theme"><svg class="i"><use href="#i-sun" id="themeUse"/></svg></button>
+    <button class="ib" onclick="toggleTheme()" aria-label="Switch theme"><svg class="i"><use href="#i-sun" id="themeUse"/></svg></button>
   </div>
 
   <div class="search">
@@ -105,7 +95,6 @@
       <svg class="i"><use href="#i-search"/></svg>
       <input id="q" type="search" placeholder="Search any city in the world" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search location">
     </label>
-    <button class="ib" onclick="useGPS()" aria-label="Use my exact GPS location" title="Use my exact GPS location"><svg class="i"><use href="#i-locate"/></svg></button>
     <div id="list" role="listbox"></div>
   </div>
 
@@ -127,11 +116,11 @@ const cv = $('cv'), ctx = cv.getContext('2d');
 const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
 const ico = (n, cls = '') => `<svg class="i ${cls}"><use href="#i-${n}"/></svg>`;
 
-let userLat = 29.3759, userLon = 47.9774, place = '';
-let targetHeading = 0, shownHeading = 0, hasHeading = false, lowAcc = false;
-let watchId = null, startT = Date.now(), wakeLock = null;
+let userLat = 29.3759, userLon = 47.9774;
+let targetHeading = 0, shownHeading = 0, hasHeading = false, lowAcc = false, sensorLive = false;
+const startT = Date.now();
 const needPerm = !!(window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function');
-let permAsked = false, permDenied = false;
+let permAsked = false, permDenied = false, wakeLock = null;
 
 const rad = d => d * Math.PI / 180, deg = r => r * 180 / Math.PI, norm = d => ((d % 360) + 360) % 360;
 const dirLabel = d => dirs[Math.round(norm(d) / 22.5) % 16];
@@ -224,6 +213,14 @@ function draw(qibla, heading) {
   ctx.fillStyle = '#fff'; ctx.strokeStyle = C.gold3; ctx.lineWidth = 1.5; ctx.fill(); ctx.stroke();
 }
 
+/* ── Why the compass may not work (shown on screen) ── */
+function reason() {
+  if (!window.isSecureContext) return 'Compass is blocked because this page is not on HTTPS. Deploy it and open the https link.';
+  if (window.top !== window.self) return 'Open this page directly in your browser, not inside a preview or embedded frame.';
+  if (!('DeviceOrientationEvent' in window)) return 'This browser has no motion sensors. Try Chrome or Safari.';
+  return 'No compass reading. Allow Motion sensors for this site in browser settings, or try Chrome or Safari.';
+}
+
 /* ── UI ── */
 let wasAligned = false;
 function ui(q, h) {
@@ -231,13 +228,15 @@ function ui(q, h) {
   setText($('dVal'), Math.round(kaabaKm(userLat, userLon)).toLocaleString());
   const diff = Math.abs(((q - h + 540) % 360) - 180), aligned = hasHeading && diff < 3;
   $('stage').classList.toggle('aligned', aligned);
-  const hint = $('hint'); hint.classList.toggle('ok', aligned);
+  const hint = $('hint');
+  hint.classList.toggle('ok', aligned);
+  hint.classList.toggle('warn', !hasHeading && !permDenied && !(needPerm && !permAsked) && Date.now() - startT > 3500);
   if (aligned) setHTML(hint, ico('check') + 'You are facing the Qibla');
   else if (hasHeading && lowAcc) setHTML(hint, ico('sensor') + 'Move your phone in a figure-8 to calibrate');
   else if (hasHeading) { const right = ((q - h + 360) % 360) < 180; setHTML(hint, ico('arrow', right ? '' : 'flip') + 'Turn ' + (right ? 'right ' : 'left ') + Math.round(diff) + '°'); }
-  else if (permDenied) setHTML(hint, ico('sensor') + 'Motion access denied. Enable it in Safari settings.');
+  else if (permDenied) { hint.classList.add('warn'); setHTML(hint, 'Motion access was denied. Close Safari, reopen the page and tap Allow.'); }
   else if (needPerm && !permAsked) setHTML(hint, ico('sensor') + 'Tap anywhere to start the compass');
-  else if (Date.now() - startT > 3500) setHTML(hint, ico('sensor') + 'No compass sensor. Showing bearing from north.');
+  else if (Date.now() - startT > 3500) setHTML(hint, reason());
   else setHTML(hint, ico('sensor') + 'Starting compass…');
   if (aligned && !wasAligned && navigator.vibrate) navigator.vibrate(60);
   wasAligned = aligned;
@@ -249,34 +248,49 @@ function frame() {
   requestAnimationFrame(frame);
 }
 
-/* ── Real-time compass (tilt-compensated) ── */
-function tiltHeading(alpha, beta, gamma) {
-  const x = rad(beta || 0), y = rad(gamma || 0), z = rad(alpha || 0);
-  const cY = Math.cos(y), cZ = Math.cos(z), sX = Math.sin(x), sY = Math.sin(y), sZ = Math.sin(z);
-  const vx = -cZ * sY - sZ * sX * cY, vy = -sZ * sY + cZ * sX * cY;
-  return norm(deg(Math.atan2(vx, vy)));
-}
-function onOrient(e) {
-  const ang = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
-  let h = null;
-  if (typeof e.webkitCompassHeading === 'number') {
-    h = e.webkitCompassHeading + ang;
-    lowAcc = e.webkitCompassAccuracy < 0 || e.webkitCompassAccuracy > 30;
-  } else if (e.alpha !== null && (e.absolute || e.type === 'deviceorientationabsolute')) {
-    const flat = Math.abs(e.beta || 0) < 40 && Math.abs(e.gamma || 0) < 40;
-    h = tiltHeading(e.alpha, e.beta, e.gamma) + (flat ? ang : 0);
-  }
+/* ── Real-time compass: 3 sources, best one wins ── */
+function setHeading(h) {
   if (h === null || isNaN(h)) return;
   targetHeading = norm(h);
   if (!hasHeading) { hasHeading = true; shownHeading = targetHeading; }
+}
+function tiltHeading(alpha, beta, gamma) {
+  const x = rad(beta || 0), y = rad(gamma || 0), z = rad(alpha || 0);
+  const cY = Math.cos(y), cZ = Math.cos(z), sX = Math.sin(x), sY = Math.sin(y), sZ = Math.sin(z);
+  return norm(deg(Math.atan2(-cZ * sY - sZ * sX * cY, -sZ * sY + cZ * sX * cY)));
+}
+function onOrient(e) {
+  const ang = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
+  if (typeof e.webkitCompassHeading === 'number') {                         // iPhone / iPad
+    lowAcc = e.webkitCompassAccuracy < 0 || e.webkitCompassAccuracy > 30;
+    setHeading(e.webkitCompassHeading + ang);
+  } else if (!sensorLive && e.alpha !== null && (e.absolute || e.type === 'deviceorientationabsolute')) {   // Android events
+    const flat = Math.abs(e.beta || 0) < 40 && Math.abs(e.gamma || 0) < 40;
+    setHeading(tiltHeading(e.alpha, e.beta, e.gamma) + (flat ? ang : 0));
+  }
+}
+function startSensorAPI() {                                                   // Chrome Android: Generic Sensor API
+  if (!('AbsoluteOrientationSensor' in window)) return;
+  try {
+    const s = new AbsoluteOrientationSensor({ frequency: 60, referenceFrame: 'screen' });
+    s.addEventListener('reading', () => {
+      const [x, y, z, w] = s.quaternion;
+      const flat = Math.abs(1 - 2 * (x * x + y * y)) > 0.75;
+      const h = flat ? Math.atan2(2 * (x * y - w * z), 1 - 2 * (x * x + z * z)) : Math.atan2(-2 * (x * z + w * y), -2 * (y * z - w * x));
+      sensorLive = true; setHeading(deg(h));
+    });
+    s.addEventListener('error', () => { sensorLive = false; });
+    s.start();
+  } catch (e) {}
 }
 let compassOn = false;
 function startCompass() {
   if (compassOn) return; compassOn = true;
   window.addEventListener('deviceorientationabsolute', onOrient, true);
   window.addEventListener('deviceorientation', onOrient, true);
+  startSensorAPI();
 }
-if (needPerm) {   // iOS only: the system requires one tap. Any tap on the page does it.
+if (needPerm) {                       // iPhone: iOS needs one tap, anywhere on the page
   const ask = async () => {
     if (permAsked) return; permAsked = true;
     try { if (await DeviceOrientationEvent.requestPermission() !== 'granted') permDenied = true; } catch (e) { permDenied = true; }
@@ -291,34 +305,30 @@ async function keepAwake() { try { if ('wakeLock' in navigator && !wakeLock) { w
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') keepAwake(); });
 document.addEventListener('click', keepAwake);
 
-/* ── Location: set, save, search (Open-Meteo geocoding), IP lookup ── */
+/* ── Location: search only (Open-Meteo geocoding) ── */
 function setLocation(lat, lon, label) {
-  userLat = lat; userLon = lon; place = label || '';
-  setText($('loc'), label ? label : lat.toFixed(4) + ', ' + lon.toFixed(4));
+  userLat = lat; userLon = lon;
+  setText($('loc'), label || lat.toFixed(4) + ', ' + lon.toFixed(4));
   try { localStorage.setItem('qibla-loc', JSON.stringify({ lat, lon, label })); } catch (e) {}
 }
-function stopGPS() { if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; } }
-
 const listEl = $('list'), qEl = $('q');
-let results = [], sel = -1, timer = null, ctrl = null;
+let results = [], timer = null, ctrl = null;
 const coordRe = /^\s*(-?\d{1,2}(?:\.\d+)?)\s*[, ]\s*(-?\d{1,3}(?:\.\d+)?)\s*$/;
-const hideList = () => { listEl.style.display = 'none'; sel = -1; };
+const hideList = () => { listEl.style.display = 'none'; };
 function render() {
   listEl.innerHTML = '';
-  if (!results.length) { listEl.innerHTML = '<div class="none">No places found</div>'; }
+  if (!results.length) listEl.innerHTML = '<div class="none">No places found</div>';
   results.forEach((r, i) => {
-    const b = document.createElement('button'); b.type = 'button'; b.role = 'option';
+    const b = document.createElement('button'); b.type = 'button';
     const t = document.createElement('span'); t.textContent = r.name;
     const sm = document.createElement('small'); sm.textContent = r.sub;
-    b.append(t, sm); b.onclick = () => choose(i);
-    listEl.appendChild(b);
+    b.append(t, sm); b.onclick = () => choose(i); listEl.appendChild(b);
   });
   listEl.style.display = 'block';
 }
 function choose(i) {
   const r = results[i]; if (!r) return;
-  stopGPS(); note('');
-  setLocation(r.lat, r.lon, r.label);
+  note(''); setLocation(r.lat, r.lon, r.label);
   qEl.value = r.name; qEl.blur(); hideList();
 }
 qEl.addEventListener('input', () => {
@@ -326,72 +336,36 @@ qEl.addEventListener('input', () => {
   const v = qEl.value.trim();
   if (v.length < 2) { hideList(); return; }
   const m = v.match(coordRe);
-  if (m && Math.abs(+m[1]) <= 90 && Math.abs(+m[2]) <= 180) {
-    results = [{ name: 'Use coordinates', sub: m[1] + ', ' + m[2], lat: +m[1], lon: +m[2], label: '' }]; render(); return;
-  }
+  if (m && Math.abs(+m[1]) <= 90 && Math.abs(+m[2]) <= 180) { results = [{ name: 'Use coordinates', sub: m[1] + ', ' + m[2], lat: +m[1], lon: +m[2], label: '' }]; render(); return; }
   timer = setTimeout(async () => {
     ctrl = new AbortController();
     try {
-      const res = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=8&language=en&format=json&name=' + encodeURIComponent(v), { signal: ctrl.signal });
-      const j = await res.json();
+      const j = await (await fetch('https://geocoding-api.open-meteo.com/v1/search?count=8&language=en&format=json&name=' + encodeURIComponent(v), { signal: ctrl.signal })).json();
       results = (j.results || []).map(p => {
         const sub = [p.admin1, p.country].filter(Boolean).join(', ');
         return { name: p.name, sub, lat: p.latitude, lon: p.longitude, label: [p.name, sub].filter(Boolean).join(', ') };
       });
       render();
-    } catch (e) { if (e.name !== 'AbortError') { results = []; listEl.innerHTML = '<div class="none">Search needs an internet connection</div>'; listEl.style.display = 'block'; } }
+    } catch (e) { if (e.name !== 'AbortError') { listEl.innerHTML = '<div class="none">Search needs an internet connection</div>'; listEl.style.display = 'block'; } }
   }, 280);
 });
-qEl.addEventListener('keydown', e => {
-  const items = listEl.querySelectorAll('button');
-  if (e.key === 'ArrowDown' && items.length) { e.preventDefault(); sel = (sel + 1) % items.length; }
-  else if (e.key === 'ArrowUp' && items.length) { e.preventDefault(); sel = (sel - 1 + items.length) % items.length; }
-  else if (e.key === 'Enter') { e.preventDefault(); choose(sel >= 0 ? sel : 0); return; }
-  else if (e.key === 'Escape') { hideList(); return; }
-  else return;
-  items.forEach((b, i) => b.classList.toggle('on', i === sel));
-  if (items[sel]) items[sel].scrollIntoView({ block: 'nearest' });
-});
+qEl.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); choose(0); } });
 qEl.addEventListener('focus', () => { qEl.select(); if (results.length && qEl.value.trim().length > 1) listEl.style.display = 'block'; });
 document.addEventListener('click', e => { if (!e.target.closest('.search')) hideList(); });
 
-async function ipLocate() {
+async function ipLocate() {   // silent starting point, no permission needed
   const tries = [
     async () => { const j = await (await fetch('https://get.geojs.io/v1/ip/geo.json')).json(); return { lat: +j.latitude, lon: +j.longitude, label: [j.city, j.country].filter(Boolean).join(', ') }; },
     async () => { const j = await (await fetch('https://ipwho.is/')).json(); if (!j.success) throw 0; return { lat: j.latitude, lon: j.longitude, label: [j.city, j.country].filter(Boolean).join(', ') }; }
   ];
-  for (const t of tries) { try { const r = await t(); if (!isNaN(r.lat) && !isNaN(r.lon)) { setLocation(r.lat, r.lon, r.label); note('Approximate location. Search your city for an exact match.'); return; } } catch (e) {} }
+  for (const t of tries) { try { const r = await t(); if (!isNaN(r.lat) && !isNaN(r.lon)) { setLocation(r.lat, r.lon, r.label); note('Approximate start. Search your city for an exact match.'); return; } } catch (e) {} }
   note('Could not detect location. Search for your city above.', true);
-}
-
-/* Optional exact GPS, only when the user taps the locate button */
-let lastGeo = null;
-async function nameFor(lat, lon) {
-  if (lastGeo && Math.abs(lat - lastGeo[0]) + Math.abs(lon - lastGeo[1]) < 0.02) return place;
-  lastGeo = [lat, lon];
-  try {
-    const j = await (await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`)).json();
-    return [j.city || j.locality, j.countryName].filter(Boolean).join(', ');
-  } catch (e) { return ''; }
-}
-function useGPS() {
-  if (!navigator.geolocation) { note('GPS is not available on this device.', true); return; }
-  stopGPS(); note('Finding your exact position…'); qEl.value = '';
-  watchId = navigator.geolocation.watchPosition(
-    async p => {
-      const la = p.coords.latitude, lo = p.coords.longitude, nm = await nameFor(la, lo);
-      setLocation(la, lo, nm); note('Live GPS · accurate to ' + Math.round(p.coords.accuracy) + ' m');
-    },
-    err => note(err.code === 1 ? 'GPS is blocked. Search your city instead.' : 'GPS error. Search your city instead.', true),
-    { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
-  );
 }
 
 /* ── Init ── */
 resize(); requestAnimationFrame(frame); keepAwake();
 let saved = null; try { saved = JSON.parse(localStorage.getItem('qibla-loc')); } catch (e) {}
-if (saved && !isNaN(saved.lat) && !isNaN(saved.lon)) setLocation(saved.lat, saved.lon, saved.label);
-else ipLocate();
+if (saved && !isNaN(saved.lat) && !isNaN(saved.lon)) setLocation(saved.lat, saved.lon, saved.label); else ipLocate();
 </script>
 </body>
 </html>
